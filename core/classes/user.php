@@ -38,6 +38,23 @@ class User {
 		
 	}
 
+	public function register($email, $screenName, $password){
+		$stmt = $this->pdo->prepare("INSERT INTO `users` (`email`, `screenName`, `password`, `profileImage`,`profileCover`) VALUES (:email, :screenName, :password, 'assets/images/defaultProfileImage.png', 'assets/images/defaultCoverImage.png')");
+
+		// hash the password
+    $hash_password = password_hash($password, PASSWORD_DEFAULT);
+
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':screenName', $screenName, PDO::PARAM_STR);
+    $stmt->bindParam(':password', $hash_password, PDO::PARAM_STR);
+
+    $stmt->execute();
+
+    $user_id = $this->pdo->lastInsertId();
+
+    $_SESSION['user_id'] = $user_id;
+	}
+
 	public function userData($user_id){
 		$stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE `user_id` = :user_id");
 		$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -50,5 +67,17 @@ class User {
 		session_destroy();
 		header('Location: ../index.php');
 		exit();
+	}
+
+	public function checkEmail($email){
+		$stmt = $this->pdo->prepare("SELECT `email` FROM `users` WHERE `email` = :email");
+		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
+		$stmt->execute();
+
+		if($stmt->rowCount() != 0){
+			return true;
+		}
+
+		return false;
 	}
 }

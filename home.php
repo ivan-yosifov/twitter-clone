@@ -2,7 +2,7 @@
 include './core/init.php';
 $user_id = $_SESSION['user_id'];
 $user = $getFromU->userData($user_id);
-print_r($user);
+$getFromU->update('users', $user_id, array('username' => 'peter2'));
 ?>
 
 <!DOCTYPE HTML> 

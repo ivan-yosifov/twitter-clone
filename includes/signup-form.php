@@ -22,7 +22,8 @@ if(isset($_POST['signup'])){
 			if($getFromU->checkEmail($email) === true){
 				$error = 'Email is already in use';
 			}else{
-				$getFromU->create('users', array('email' => $email, 'screenName' => $screenName, 'password' => password_hash($password, PASSWORD_DEFAULT), 'profileImage' => 'assets/images/defaultProfileImage.png', 'profileCover' => 'assets/images/defaultCoverImage.png'));
+				$user_id = $getFromU->create('users', array('email' => $email, 'screenName' => $screenName, 'password' => password_hash($password, PASSWORD_DEFAULT), 'profileImage' => 'assets/images/defaultProfileImage.png', 'profileCover' => 'assets/images/defaultCoverImage.png'));
+				$_SESSION['user_id'] = $user_id;
 				header('Location: includes/signup.php?step=1');
 				exit();
 			}
